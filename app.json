@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "TwiceBuy",
+    "slug": "TwiceBuy",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./app/assets/Icon.png",
+    "splash": {
+      "image": "./app/assets/SplashScreen.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#8764C2"
+    },
+    "packagerOpts": {
+      "config": "metro.config.js",
+      "sourceExts": [
+        "expo.ts",
+        "expo.tsx",
+        "expo.js",
+        "expo.jsx",
+        "ts",
+        "tsx",
+        "js",
+        "jsx",
+        "json",
+        "wasm",
+        "svg"
+      ]
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./app/assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./app/assets/favicon.png"
+    }
+  }
+}
