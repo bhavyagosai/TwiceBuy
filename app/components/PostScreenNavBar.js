@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import {
   View,
   Dimensions,
@@ -18,43 +17,53 @@ import Favourite from "../assets/original/Favourite.svg";
 import Profile from "../assets/original/Profile.svg";
 import Plus from "../assets/original/Plus.svg";
 import PostScreenModal from "./PostScreenModal";
+import { FontAwesome } from "@expo/vector-icons";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import { useNavigation } from "@react-navigation/native";
 
 // *MAIN CODE* //
 
-function NavigationBar(props) {
-  const [modalVisible, setmodalVisible] = useState(false);
+function PostScreenNavBar({
+  setImageArray,
+  setCategory,
+  setIcon,
+}) {
+  // const navigation = useNavigation();
+
   return (
-    <>
-      <View style={{ position: "absolute", bottom: 0 }}>
-        <View style={{ alignItems: "center", top: 40 }}>
-          <BoxShadow setting={ShadowCircle} />
-        </View>
-        <View>
-          <BoxShadow setting={ShadowNavigation}>
-            <View style={styles.navigation}>
-              <Home style={styles.icon} />
-              <Chat style={styles.icon} />
-              <TouchableNativeFeedback
-                background={TouchableNativeFeedback.Ripple(colors.pressing_bg)}
-                onPress={() => {
-                  setmodalVisible(true);
-                }}
-              >
-                <View style={styles.containerCircle}>
-                  <Plus />
-                </View>
-              </TouchableNativeFeedback>
-              <Favourite style={styles.icon} />
-              <Profile style={styles.icon} />
-            </View>
-          </BoxShadow>
-        </View>
+    <View style={{ position: "absolute", bottom: 0 }}>
+      <View style={{ alignItems: "center", top: 40 }}>
+        <BoxShadow setting={ShadowCircle} />
       </View>
-      {/* <PostScreenModal
-        // visible={modalVisible}
-        // setModalVisibility={(setStatus) => setmodalVisible(setStatus)}
-      /> */}
-    </>
+      <View>
+        <BoxShadow setting={ShadowNavigation}>
+          <View style={styles.navigation}>
+            {/* <Home style={styles.icon} /> */}
+            {/* <Chat style={styles.icon} /> */}
+            <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple(colors.pressing_bg)}
+              onPress={() => {
+                setCategory(null);
+                setIcon(null);
+                setImageArray([]);
+                // setModalVisibility(false);
+                // navigation.navigate("FeedNavigator");
+              }}
+            >
+              <View style={styles.containerCircle}>
+                <FontAwesome
+                  name="check"
+                  size={36}
+                  color={colors.pressing_fg}
+                />
+              </View>
+            </TouchableNativeFeedback>
+            {/* <Favourite style={styles.icon} /> */}
+            {/* <Profile style={styles.icon} /> */}
+          </View>
+        </BoxShadow>
+      </View>
+    </View>
   );
 }
 
@@ -106,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NavigationBar;
+export default PostScreenNavBar;

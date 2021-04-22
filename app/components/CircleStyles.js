@@ -2,6 +2,8 @@ import { StyleSheet } from 'react-native';
 
 import colors from "../config/colors";
 
+// *CIRCLES STYLES DEFINITIONS* //
+
 const CircleStyles = StyleSheet.create({
     circleTopRight: {
         position: "absolute",

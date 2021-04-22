@@ -1,8 +1,11 @@
 export default {
-    main_bg: "#E5E5E5",
-    main_fg: "#8764C2",
-    pressing_fg: "#FFFFFF",
-    secondary_text: "#D2D2D2",
-    shadow: "#000000",
-    navigationBar: "#EEE5FE",
+  main_bg: "#E5E5E5",
+  pressing_bg: "#EEE5FE",
+  main_fg: "#8764C2",
+  pressing_fg: "#FFFFFF",
+  secondary_text: "#656565",
+  placeholder: "#c5c5c5",
+  navigationBar: "#EEE5FE",
+  error_message: "#DC143C",
+  shadow: "#000000",
 };

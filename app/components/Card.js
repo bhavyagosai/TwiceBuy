@@ -1,53 +1,50 @@
 import React from "react";
 
 import { View, Text, Image, StyleSheet } from "react-native";
+import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import { RFValue } from "react-native-responsive-fontsize";
-import { BoxShadow } from "react-native-shadow";
+import { Shadow } from "react-native-shadow-2";
 
-// *IMPORT WIDTH HANDLER FUNCTION* //
-import useComponentWidth from "../config/WidthHandler";
 // *IMPORT COLORS* //
 import colors from "../config/colors";
 
-function Card({ image, title, subtitle }) {
-  const [getWidth, handleWidth] = useComponentWidth();
-
-  const ShadowInputBox = {
-    width: getWidth,
-    height: 200,
-    color: colors.shadow,
-    border: 10,
-    radius: 25,
-    opacity: 0.1,
-    x: 0,
-    y: 1,
-    style: {
-      marginBottom: 35,
-    },
-  };
+function Card({ image, title, subtitle, onPress }) {
+  // *MAIN CODE* //
 
   return (
-    <View style={{ width: "100%" }} onLayout={handleWidth}>
-      <BoxShadow setting={ShadowInputBox}>
-        <View style={styles.card}>
-          <View style={styles.imageContainer}>
-            <Image style={styles.image} source={image} />
+    <View style={{ width: "100%" }}>
+      <Shadow
+        distance={10}
+        startColor={"#00000017"}
+        radius={25}
+        contentViewStyle={{ marginBottom: 35 }}
+      >
+        <TouchableNativeFeedback
+          onPress={onPress}
+          background={TouchableNativeFeedback.Ripple(colors.pressing_bg)}
+        >
+          <View style={styles.card}>
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={image} />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                width: "100%",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text style={styles.title}>{title}</Text>
+              <Text style={styles.subtitle}>{subtitle}</Text>
+            </View>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              width: "100%",
-              justifyContent: "space-between",
-            }}
-          >
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.subtitle}>{subtitle}</Text>
-          </View>
-        </View>
-      </BoxShadow>
+        </TouchableNativeFeedback>
+      </Shadow>
     </View>
   );
 }
+
+// *LOCAL STYLES DEFINITIONS* //
 
 const styles = StyleSheet.create({
   card: {
