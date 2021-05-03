@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import ImagePickerCard from "./ImagePickerCard";
 
 function ImageInputList({ imageURIs = [], onRemoveImage, onAddImage }) {

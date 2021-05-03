@@ -23,17 +23,31 @@ function ImagePickerCard({
   setImagePicker,
 }) {
   useEffect(() => {
-    requestPermission();
+    requestMediaLibraryPermission();
+    requestCameraPermission();
   });
-  const requestPermission = async () => {
+
+  const requestMediaLibraryPermission = async () => {
     const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!granted)
       alert("You need to enable permissions to access the Library!");
   };
 
+  const requestCameraPermission = async () => {
+    const { granted } = await ImagePicker.requestCameraPermissionsAsync();
+    if (!granted) alert("You need to enable permissions to access the Camera!");
+  };
+
   const handlePress = () => {
     if (!imageURI) {
-      selectImage();
+      Alert.alert(
+        "Select",
+        "Do you want to take a picture or upload it from your storage?",
+        [
+          { text: "Upload Image", onPress: () => selectImage() },
+          { text: "Open Camera", onPress: () => clickImage() },
+        ]
+      );
     } else
       Alert.alert("Delete", "Are you sure you want to delete this image?", [
         { text: "Yes", onPress: () => onChangeImage(null) },
@@ -49,7 +63,18 @@ function ImagePickerCard({
       });
       if (!selected.cancelled) onChangeImage(selected.uri);
     } catch (error) {
-      console.log("Error reading the image!", error);
+      alert("Error reading the image!", error);
+    }
+  };
+
+  const clickImage = async () => {
+    try {
+      const selected = await ImagePicker.launchCameraAsync({
+        quality: 0.5,
+      });
+      if (!selected.cancelled) onChangeImage(selected.uri);
+    } catch (error) {
+      alert("Error reading the image!", error);
     }
   };
 

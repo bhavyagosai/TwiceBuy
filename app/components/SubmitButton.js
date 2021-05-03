@@ -9,7 +9,7 @@ function SubmitButton({ title }) {
   const { handleSubmit } = useFormikContext();
   return (
     <TouchableNativeFeedback
-      onPress={handleSubmit}
+      onPress={() => handleSubmit()}
       background={TouchableNativeFeedback.Ripple(colors.pressing_bg)}
     >
       <View style={styles.Button}>

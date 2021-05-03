@@ -13,7 +13,7 @@ import { LogBox } from "react-native";
 import Icon from "react-native-animated-icons";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchFavouriteItems } from "../redux/actions/index";
+import { fetchmyListings } from "../redux/actions/index";
 
 import Card from "../components/Card";
 import colors from "../config/colors";
@@ -42,11 +42,11 @@ const AnimateTextColour = diffClamp.interpolate({
 
 // *MAIN CODE* //
 
-function FavouritesScreen(props) {
+function myListingsScreen(props) {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    props.fetchFavouriteItems();
+    props.fetchmyListings();
   }, []);
 
   const navigation = useNavigation();
@@ -58,7 +58,7 @@ function FavouritesScreen(props) {
     return true;
   }
 
-  return isEmpty(props.favouriteItem) !== true ? (
+  return isEmpty(props.myListingItem) !== true ? (
     <View style={styles.Background}>
       <View style={{ flex: 1 }}>
         <Animated.View
@@ -79,12 +79,12 @@ function FavouritesScreen(props) {
                 <Animated.Text
                   style={[styles.Text, { color: AnimateTextColour }]}
                 >
-                  Favourites
+                  My Listings
                 </Animated.Text>
                 {/* <View style={{ marginLeft: 5 }}>
                   <Icon
-                    name="heart"
-                    fontFamily="FontAwesome"
+                    name="format-list-bulleted"
+                    fontFamily="MaterialCommunityIcons"
                     fontSize={RFValue(23)}
                     color={AnimateTextColour}
                   />
@@ -102,8 +102,8 @@ function FavouritesScreen(props) {
         </Animated.View>
         <View style={{ flex: 1, marginHorizontal: 22 }}>
           <FlatList
-            data={props.favouriteItem}
-            keyExtractor={(favouriteItem) => favouriteItem.id}
+            data={props.myListingItem}
+            keyExtractor={(myListingItem) => myListingItem.id}
             renderItem={({ item }) => (
               <Card
                 image={item.imageURL[0]}
@@ -119,7 +119,7 @@ function FavouritesScreen(props) {
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
-                onRefresh={props.fetchFavouriteItems}
+                onRefresh={props.fetchmyListings}
                 colors={[colors.main_fg]}
                 progressBackgroundColor={colors.pressing_bg}
                 progressViewOffset={105}
@@ -141,15 +141,15 @@ function FavouritesScreen(props) {
       <ActivityIndicator visible={true} />
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Text style={styles.loadingText}>
-          Looks like you havent favourited anything yet!{"\n"}Go start
-          favouriting items now!
+          Looks like you havent put up anything to sell yet!{"\n"}Go sell
+          something!
         </Text>
         <Text
           style={[
             styles.loadingText,
             { marginTop: 5, color: colors.secondary_text },
           ]}
-          onPress={props.fetchFavouriteItems}
+          onPress={props.fetchmyListings}
         >
           Tap here to refresh!
         </Text>
@@ -191,10 +191,10 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (store) => ({
-  favouriteItem: store.favouriteItemState.favouriteItem,
+  myListingItem: store.myListingItemState.myListingItem,
 });
 const mapDispatchProps = (dispatch) =>
-  bindActionCreators({ fetchFavouriteItems }, dispatch);
+  bindActionCreators({ fetchmyListings }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchProps)(FavouritesScreen);
+export default connect(mapStateToProps, mapDispatchProps)(myListingsScreen);
 // export default FavouritesScreen;

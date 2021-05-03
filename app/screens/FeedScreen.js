@@ -1,16 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   ScrollView,
   StyleSheet,
   View,
+  Text,
   Dimensions,
   Animated,
+  RefreshControl,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { RFValue } from "react-native-responsive-fontsize";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchUser } from "../redux/actions/index";
+import { fetchFeedItems, fetchFavouriteItems } from "../redux/actions/index";
+import * as Location from "expo-location";
 
 import Card from "../components/Card";
 import colors from "../config/colors";
@@ -22,50 +26,56 @@ import QuickAccessComponentBox from "../components/QuickAccessComponentBox";
 import SearchImg from "../assets/original/Search.svg";
 import useLocation from "../hooks/useLocation";
 
-const cards = [
-  {
-    id: 1,
-    image: require("../assets/original/ps5.png"),
-    title: "Play Station 5",
-    price: "₹  37,000",
-  },
-  {
-    id: 2,
-    image: require("../assets/original/ps5.png"),
-    title: "Play Station 6",
-    price: "₹  37,000",
-  },
-  {
-    id: 3,
-    image: require("../assets/original/ps5.png"),
-    title: "Play Station 7",
-    price: "₹  37,000",
-  },
-  {
-    id: 4,
-    image: require("../assets/original/ps5.png"),
-    title: "Play Station 8",
-    price: "₹  37,000",
-  },
-  {
-    id: 5,
-    image: require("../assets/original/ps5.png"),
-    title: "Play Station 9",
-    price: "₹  37,000",
-  },
-  {
-    id: 6,
-    image: require("../assets/original/ps5.png"),
-    title: "Play Station 10",
-    price: "₹  37,000",
-  },
-  {
-    id: 7,
-    image: require("../assets/original/ps5.png"),
-    title: "Play Station 11",
-    price: "₹  37,000",
-  },
-];
+import store from "../redux/store/index";
+import Firebase from "../components/Firebase";
+import firebase from "firebase";
+import ActivityIndicator from "../components/ActivityIndicator";
+import Screen from "../components/Screen";
+
+// const cards = [
+//   {
+//     id: 2,
+//     image: require("../assets/original/ps5.png"),
+//     title: "Play Station 6",
+//     price: "₹  37,000",
+//   },
+//   {
+//     id: 4,
+//     image: require("../assets/original/ps5.png"),
+//     title: "Play Station 7",
+//     price: "₹  37,000",
+//   },
+//   {
+//     id: 5,
+//     image: require("../assets/original/ps5.png"),
+//     title: "Play Station 8",
+//     price: "₹  37,000",
+//   },
+//   {
+//     id: "ello",
+//     image: require("../assets/original/ps5.png"),
+//     title: "Play Station 5",
+//     price: "₹  37,000",
+//   },
+//   {
+//     id: 6,
+//     image: require("../assets/original/ps5.png"),
+//     title: "Play Station 9",
+//     price: "₹  37,000",
+//   },
+//   {
+//     id: 7,
+//     image: require("../assets/original/ps5.png"),
+//     title: "Play Station 10",
+//     price: "₹  37,000",
+//   },
+//   {
+//     id: 8,
+//     image: require("../assets/original/ps5.png"),
+//     title: "Play Station 11",
+//     price: "₹  37,000",
+//   },
+// ];
 
 const ListHeader = () => {
   return (
@@ -98,20 +108,26 @@ const AnimateBackgroundColour = diffClamp.interpolate({
   inputRange: [0, 55],
   outputRange: [colors.pressing_bg, colors.main_fg],
 });
-
 // *MAIN CODE* //
 
-function FeedScreen({ navigation }) {
-  const location = useLocation();
+function FeedScreen(props) {
+  const [refreshing, setRefreshing] = useState(false);
 
-  // useEffect(() => {
-  //   fetchUser();
-  // }, []);
+  useEffect(() => {
+    props.fetchFeedItems();
+    props.fetchFavouriteItems();
+  }, []);
 
-  // const { currentUser }
-  // console.log(currentUser);
+  const navigation = useNavigation();
 
-  return (
+  function isEmpty(obj) {
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) return false;
+    }
+    return true;
+  }
+
+  return isEmpty(props.feedItem) !== true ? (
     <View style={styles.Background}>
       <View style={{ flex: 1, height: Dimensions.get("screen").height }}>
         <Animated.View
@@ -140,14 +156,17 @@ function FeedScreen({ navigation }) {
 
         <View style={{ flex: 1, marginHorizontal: 22 }}>
           <FlatList
-            data={cards}
-            keyExtractor={(card) => card.id.toString()}
+            data={props.feedItem}
+            keyExtractor={(feedItem) => feedItem.id}
             renderItem={({ item }) => (
               <Card
-                image={item.image}
-                title={item.title}
-                subtitle={item.price}
+                image={item.imageURL[0]}
+                title={item.name}
+                subtitle={"₹  " + item.price}
                 onPress={() => navigation.navigate("Item", item)}
+                displayFavourite={true}
+                items={item}
+                favouriteItems={props.favouriteItem}
               />
             )}
             showsVerticalScrollIndicator={false}
@@ -155,6 +174,17 @@ function FeedScreen({ navigation }) {
             decelerationRate={"normal"}
             keyboardShouldPersistTaps={"never"}
             ListHeaderComponent={ListHeader}
+            // refreshing={refreshing}
+            // onRefresh={props.fetchFeedItems}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={props.fetchFeedItems}
+                colors={[colors.main_fg]}
+                progressBackgroundColor={colors.pressing_bg}
+                progressViewOffset={105}
+              />
+            }
             onScroll={(e) => {
               scrollY.setValue(e.nativeEvent.contentOffset.y);
             }}
@@ -166,6 +196,23 @@ function FeedScreen({ navigation }) {
         </View>
       </View>
     </View>
+  ) : (
+    <Screen>
+      <ActivityIndicator visible={true} />
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text
+          style={{
+            fontFamily: "Montserrat",
+            fontSize: RFValue(12),
+            color: colors.main_fg,
+            textAlign: "center",
+            marginTop: "30%",
+          }}
+        >
+          Fetching all the details{"\n"}Hang on tight!
+        </Text>
+      </View>
+    </Screen>
   );
 }
 
@@ -178,22 +225,23 @@ const styles = StyleSheet.create({
   },
   MainHeaderContainer: {
     position: "absolute",
-    // width: "100%",
-    // height: 500,
-    // top: 0,
-    // right: 0,
-    // left: 0,
   },
   QuickAccessComponent: {
     flexDirection: "row",
   },
 });
 
-const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser,
-});
-const mapDispatchProps = (dispatch) =>
-  bindActionCreators({ fetchUser }, dispatch);
-
-// export default connect(null, mapDispatchProps)(FeedScreen);
-export default FeedScreen;
+const mapStateToProps = (store) => {
+  return {
+    feedItem: store.feedItemState.feedItem,
+    favouriteItem: store.favouriteItemState.favouriteItem,
+  };
+};
+const mapDispatchProps = (dispatch) => {
+  return {
+    fetchFeedItems: () => dispatch(fetchFeedItems()),
+    fetchFavouriteItems: () => dispatch(fetchFavouriteItems()),
+  };
+};
+export default connect(mapStateToProps, mapDispatchProps)(FeedScreen);
+// export default FeedScreen;

@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {} from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
 import { NavigationContainer } from "@react-navigation/native";
 import * as firebase from "firebase";
 import { Provider } from "react-redux";
-import { createStore, applyMiddleware } from "redux";
-import rootReducers from "./app/redux/reducers";
-import thunk from "redux-thunk";
+import * as Location from "expo-location";
 
 import Screen from "./app/components/Screen";
 
@@ -32,8 +30,9 @@ import FavouritesScreen from "./app/screens/FavouritesScreen";
 import PostScreenModal from "./app/components/PostScreenModal";
 import ActivityIndicator from "./app/components/ActivityIndicator";
 import Firebase from "./app/components/Firebase";
-
-// const store = createStore(rootReducers, applyMiddleware(thunk));
+import store from "./app/redux/store/index";
+import { Alert } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -42,71 +41,92 @@ export default function App() {
   console.log("Application execution complete!");
 
   const [firebaseInitialized, setFirebaseInitialized] = useState(false);
-
-  // useEffect(() => {
-  //   const initialization = firebase.default
-  //     .auth()
-  //     .onAuthStateChanged((user) => {
-  //       if (user) setFirebaseInitialized(true);
-  //     });
-  //   return function cleanup() {
-  //     initialization();
-  //   };
-  // }, []);
+  const [givenLocation, setGivenLocation] = useState(false);
+  const [location, setLocation] = useState(true);
 
   useEffect(() => {
     const initialization = Firebase.isInitialized();
-    if (initialization) setFirebaseInitialized(true);
+    if (initialization) {
+      Location.enableNetworkProviderAsync()
+        .then(() => {
+          setFirebaseInitialized(true);
+          setLocation(false);
+          setGivenLocation(true);
+        })
+        .catch((error) => {
+          Alert.alert(
+            "Wait!",
+            "Please enable location services for a better experience\nError: " +
+              error,
+            [
+              {
+                text: "Enable services",
+                onPress: () => {
+                  Location.enableNetworkProviderAsync()
+                    .then(() => {
+                      setFirebaseInitialized(true);
+                      setLocation(false);
+                      setGivenLocation(true);
+                    })
+                    .catch((error) => alert(error));
+                },
+              },
+            ]
+          );
+        });
+    }
     return function cleanup() {
-      initialization();
+      Firebase.isInitialized();
     };
   }, []);
 
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return (
+      <Screen>
+        <ActivityIndicator visible={true} />
+      </Screen>
+    );
   } else {
     return firebaseInitialized !== false ? (
       <Screen>
-        {/* <View
-        style={{
-          flex: 1,
-          backgroundColor: "#e5e5e5",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <View style={{ width : "100%" }}>
-          <SearchBox icon={<Search />} />
-        </View>
-      </View> */}
-        {/* <Provider store={store}>
-          <FeedScreen />
-        </Provider> */}
+        {/* <FeedScreen /> */}
         {/* <ItemScreen /> */}
         {/* <LoginScreen /> */}
         {/* <RegisterScreen /> */}
         {/* <FavouritesScreen/> */}
         {/* <PostScreenModal/> */}
-        {/* <Provider store={store}> */}
-        <NavigationContainer theme={lightTheme}>
-          <AuthNavigator />
-        </NavigationContainer>
-        {/* </Provider> */}
+        <Provider store={store}>
+          <NavigationContainer theme={lightTheme}>
+            <AuthNavigator />
+          </NavigationContainer>
+        </Provider>
       </Screen>
     ) : (
       <Screen>
         <ActivityIndicator visible={true} />
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          {givenLocation && (
+            <Text style={styles.text}>
+              Fetching all the details{"\n"}Hang on tight!
+            </Text>
+          )}
+          {location && (
+            <Text style={styles.text}>Enable locations please!</Text>
+          )}
+        </View>
       </Screen>
     );
   }
 }
 
-// const styles = StyleSheet.create({
-//   container: {
-//     //flex: 1,
-//     // borderWidth: 3,
-//     // borderColor: 'red',
-//     //backgroundColor: "#fff",
-//     // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight :0,
-//   },
-// });
+const styles = StyleSheet.create({
+  text: {
+    fontFamily: "Montserrat",
+    fontSize: RFValue(12),
+    color: colors.main_fg,
+    textAlign: "center",
+    marginTop: "30%",
+  },
+});

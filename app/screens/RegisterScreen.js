@@ -36,7 +36,7 @@ function RegisterScreen({ navigation }) {
     contactNumber: Yup.string()
       .matches(phoneRegExp, "Invalid Phone Number")
       .min(10, "Invalid Phone Number")
-      .max(16, "Invalid Phone Number")
+      .max(10, "Invalid Phone Number")
       .required()
       .label("Contact Number"),
     password: Yup.string().required().min(8).label("Password"),
@@ -176,7 +176,7 @@ function RegisterScreen({ navigation }) {
                     onBlur={() => setFieldTouched("contactNumber")}
                     onChangeText={handleChange("contactNumber")}
                     keyboardType={"phone-pad"}
-                    placeholder={"+xx xxx-xxx-xxxx"}
+                    placeholder={"xxx-xxx-xxxx"}
                     // value={cardNumber}
                   />
                   <ErrorMessage

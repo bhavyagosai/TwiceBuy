@@ -1,44 +1,67 @@
-import React from "react";
+import React, { useState } from "react";
 
-import { View, Text, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableNativeFeedback,
+  Modal,
+  Dimensions,
+} from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import { Shadow } from "react-native-shadow-2";
-
-import { FontAwesome5 } from "@expo/vector-icons";
-//-----------**************NOT IN USE*************---------------//
 // *IMPORT COLORS* //
 import colors from "../config/colors";
+import Screen from "./Screen";
 
-function ItemScreenCard({ image, title }) {
+function ItemScreenCard({ image }) {
+  const [modal, setModal] = useState(false);
+
+  const screenWidth = Dimensions.get("screen").width;
+
   // *MAIN CODE* //
   return (
-    <View style={{ width: "100%" }}>
-      <Shadow
-        distance={10}
-        startColor={"#00000017"}
-        radius={{ topLeft: 25, topRight: 25, bottomLeft: 5, bottomRight: 5 }}
-      >
-        <View style={styles.card}>
-          <View style={styles.imageContainer}>
-            {image && <Image style={styles.image} source={image} />}
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              width: "100%",
-              justifyContent: "space-between",
+    <>
+      <View style={{ width: 0.9 * screenWidth, marginRight: 20 }}>
+        <Shadow distance={10} startColor={"#00000017"} radius={20}>
+          <TouchableNativeFeedback
+            onPress={() => {
+              setModal(true);
             }}
+            background={TouchableNativeFeedback.Ripple(colors.pressing_bg)}
+            useForeground={true}
           >
-            <Text style={styles.title}>{title}</Text>
-          </View>
-        </View>
-        <View style={styles.FavouriteContainer}>
-          <FontAwesome5 name="heart" size={16} color={colors.main_fg} />
-          {/* <FontAwesome name="heart" size={16} color={colors.main_fg} /> */}
-          {/* <Favourite /> */}
-        </View>
-      </Shadow>
-    </View>
+            <View style={styles.card}>
+              <Image style={styles.image} source={{ uri: image }} />
+            </View>
+          </TouchableNativeFeedback>
+        </Shadow>
+      </View>
+      {modal && (
+        <Modal animationType={"slide"}>
+          <Screen>
+            <View style={styles.modalContainer}>
+              <View>
+                <TouchableNativeFeedback
+                  onPress={() => {
+                    setModal(false);
+                  }}
+                  background={TouchableNativeFeedback.Ripple(
+                    colors.pressing_bg
+                  )}
+                >
+                  <View style={styles.Button}>
+                    <Text style={styles.buttonText}>Close</Text>
+                  </View>
+                </TouchableNativeFeedback>
+              </View>
+              <Image style={styles.modalImage} source={{ uri: image }} />
+            </View>
+          </Screen>
+        </Modal>
+      )}
+    </>
   );
 }
 
@@ -48,43 +71,40 @@ const styles = StyleSheet.create({
   card: {
     height: 200,
     width: "100%",
-    borderTopStartRadius: 20,
-    borderTopEndRadius: 20,
-    borderBottomRightRadius: 3,
-    borderBottomLeftRadius: 3,
+    borderRadius: 20,
     backgroundColor: colors.main_fg,
-    // elevation: 16,
-  },
-  imageContainer: {
-    height: 166,
-    width: "100%",
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
     overflow: "hidden",
   },
   image: {
     resizeMode: "cover",
     height: "100%",
     width: "100%",
+    overflow: "hidden",
   },
-  title: {
-    marginTop: 5,
-    marginLeft: 15,
+  modalImage: {
+    resizeMode: "contain",
+    height: "100%",
+    width: "100%",
+    overflow: "hidden",
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "#111111",
+    alignItems: "center",
+  },
+  Button: {
+    marginVertical: 20,
+    height: 50,
+    width: 120,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.main_fg,
+  },
+  buttonText: {
     fontFamily: "Montserrat",
     fontSize: RFValue(11.5),
     color: colors.pressing_fg,
-  },
-  FavouriteContainer: {
-    position: "absolute",
-    bottom: 17,
-    right: 20,
-    height: 35,
-    width: 35,
-    borderRadius: 17.5,
-    backgroundColor: colors.pressing_bg,
-    elevation: 16,
-    alignItems: "center",
-    justifyContent: "center",
   },
 });
 

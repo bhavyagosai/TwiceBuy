@@ -17,54 +17,54 @@ function ModalView({
   // showModal,
   // selectedItemAction,
   // selectedIconAction,
-  route
+  route,
 }) {
   const navigation = useNavigation();
-  const {items, selectedItemAction, selectedIconAction} = route.params;
+  const { items, selectedItemAction, selectedIconAction } = route.params;
   return (
     // <Modal {...otherProps} animationType={"slide"}>
-      <View style={styles.Main}>
-        <View style={{ width: "100%" }}>
-          <View
-            style={{
-              alignItems: "center",
+    <View style={styles.Main}>
+      <View style={{ width: "100%" }}>
+        <View
+          style={{
+            alignItems: "center",
+          }}
+        >
+          <TouchableNativeFeedback
+            onPress={() => {
+              // showModal(false);
+              navigation.goBack();
             }}
+            background={TouchableNativeFeedback.Ripple(colors.pressing_bg)}
           >
-            <TouchableNativeFeedback
-              onPress={() => {
+            <View style={styles.Button}>
+              <Text style={styles.buttonText}>Close</Text>
+            </View>
+          </TouchableNativeFeedback>
+        </View>
+        <FlatList
+          data={items}
+          keyExtractor={(item) => item.value.toString()}
+          numColumns={2}
+          renderItem={({ item }) => (
+            <ItemPickerBox
+              item={item}
+              title={item.label}
+              onPressEvent={() => {
                 // showModal(false);
+                selectedItemAction(item);
+                selectedIconAction(item);
                 navigation.goBack();
               }}
-              background={TouchableNativeFeedback.Ripple(colors.pressing_bg)}
-            >
-              <View style={styles.Button}>
-                <Text style={styles.buttonText}>Close</Text>
-              </View>
-            </TouchableNativeFeedback>
-          </View>
-          <FlatList
-            data={items}
-            keyExtractor={(item) => item.value.toString()}
-            numColumns={2}
-            renderItem={({ item }) => (
-              <ItemPickerBox
-                item={item}
-                title={item.label}
-                onPressEvent={() => {
-                  // showModal(false);
-                  selectedItemAction(item);
-                  selectedIconAction(item);
-                  navigation.goBack();
-                }}
-              />
-            )}
-            showsVerticalScrollIndicator={false}
-            fadingEdgeLength={5}
-            decelerationRate={"normal"}
-            keyboardShouldPersistTaps={"never"}
-          />
-        </View>
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+          fadingEdgeLength={5}
+          decelerationRate={"normal"}
+          keyboardShouldPersistTaps={"never"}
+        />
       </View>
+    </View>
     // </Modal>
   );
 }
@@ -90,24 +90,6 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat",
     fontSize: RFValue(11.5),
     color: colors.pressing_fg,
-  },
-  text: {
-    textAlign: "center",
-    fontFamily: "Montserrat",
-    fontSize: RFValue(10),
-    color: colors.main_fg,
-    paddingBottom: 10,
-  },
-  textInput: {
-    backgroundColor: colors.pressing_fg,
-    width: "100%",
-    height: 50,
-    borderRadius: 17.5,
-    paddingHorizontal: 20,
-    justifyContent: "center",
-    fontFamily: "Montserrat",
-    fontSize: RFValue(10),
-    color: colors.secondary_text,
   },
 });
 

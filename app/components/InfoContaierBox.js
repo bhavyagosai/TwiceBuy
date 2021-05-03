@@ -7,17 +7,30 @@ import {
   Image,
   TouchableNativeFeedback,
 } from "react-native";
+import MapView, { Marker } from "react-native-maps";
 import { RFValue } from "react-native-responsive-fontsize";
 import { Shadow } from "react-native-shadow-2";
 
 import colors from "../config/colors";
+import ActivityIndicator from "./ActivityIndicator";
 import Map from "./Map";
 
 function InfoContaierBox({ title, profile, icon, subtitle, content, map }) {
   const [mapDisplay, showMapDisplay] = useState(false);
 
   if (map != null) {
-    return (
+    const location = useLocation();
+
+    function isEmpty(obj) {
+      let check = 0;
+      for (var prop in obj) {
+        if (obj[prop] === undefined) check += 1;
+      }
+      if (check === 0) return false;
+      else return true;
+    }
+
+    return isEmpty(location) !== true ? (
       <>
         <View style={{ width: "100%", marginBottom: 20 }}>
           <Shadow distance={10} startColor={"#00000007"} radius={17.5}>
@@ -26,7 +39,26 @@ function InfoContaierBox({ title, profile, icon, subtitle, content, map }) {
               background={TouchableNativeFeedback.Ripple(colors.pressing_bg)}
             >
               <View style={[styles.Container, { padding: 20, height: 250 }]}>
-                <Image style={styles.image} source={map} />
+                <MapView
+                  style={{ height: "100%" }}
+                  loadingEnabled={true}
+                  scrollEnabled={false}
+                  loadingIndicatorColor={colors.main_fg}
+                  initialRegion={{
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                    latitudeDelta: 0.015,
+                    longitudeDelta: 0.012,
+                  }}
+                >
+                  <Marker
+                    coordinate={{
+                      latitude: location.latitude,
+                      longitude: location.longitude,
+                    }}
+                    pinColor={colors.main_fg}
+                  />
+                </MapView>
               </View>
             </TouchableNativeFeedback>
           </Shadow>
@@ -36,6 +68,14 @@ function InfoContaierBox({ title, profile, icon, subtitle, content, map }) {
           setModalVisibility={(setStatus) => showMapDisplay(setStatus)}
         />
       </>
+    ) : (
+      <View style={{ width: "100%", marginBottom: 20 }}>
+        <Shadow distance={10} startColor={"#00000007"} radius={17.5}>
+          <View style={[styles.Container, { padding: 20, height: 250 }]}>
+            <ActivityIndicator visible={true} />
+          </View>
+        </Shadow>
+      </View>
     );
   } else {
     if (content == null) {
@@ -120,7 +160,7 @@ function InfoContaierBox({ title, profile, icon, subtitle, content, map }) {
                   styles.Text,
                   {
                     color: colors.main_fg,
-                    fontSize: RFValue(7),
+                    fontSize: RFValue(8.5),
                     textAlign: "justify",
                     marginTop: 5,
                   },

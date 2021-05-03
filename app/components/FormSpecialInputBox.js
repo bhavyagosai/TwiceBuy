@@ -6,14 +6,12 @@ function FormSpecialInputBox({
   name,
   icon,
   items,
-  selectedItem,
   selectedIcon,
-  onSelectedItem,
   onSelectedIcon,
   text,
   height,
 }) {
-  const { errors, setFieldValue, touched, values } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext();
 
   return (
     <>

@@ -23,46 +23,11 @@ import { useNavigation } from "@react-navigation/native";
 
 // *MAIN CODE* //
 
-function PostScreenNavBar({
-  setImageArray,
-  setCategory,
-  setIcon,
-}) {
+function PostScreenNavBar({ setImageArray, setCategory, setIcon }) {
   // const navigation = useNavigation();
 
   return (
     <View style={{ position: "absolute", bottom: 0 }}>
-      <View style={{ alignItems: "center", top: 40 }}>
-        <BoxShadow setting={ShadowCircle} />
-      </View>
-      <View>
-        <BoxShadow setting={ShadowNavigation}>
-          <View style={styles.navigation}>
-            {/* <Home style={styles.icon} /> */}
-            {/* <Chat style={styles.icon} /> */}
-            <TouchableNativeFeedback
-              background={TouchableNativeFeedback.Ripple(colors.pressing_bg)}
-              onPress={() => {
-                setCategory(null);
-                setIcon(null);
-                setImageArray([]);
-                // setModalVisibility(false);
-                // navigation.navigate("FeedNavigator");
-              }}
-            >
-              <View style={styles.containerCircle}>
-                <FontAwesome
-                  name="check"
-                  size={36}
-                  color={colors.pressing_fg}
-                />
-              </View>
-            </TouchableNativeFeedback>
-            {/* <Favourite style={styles.icon} /> */}
-            {/* <Profile style={styles.icon} /> */}
-          </View>
-        </BoxShadow>
-      </View>
     </View>
   );
 }

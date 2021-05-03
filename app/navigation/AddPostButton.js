@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import {
   TouchableNativeFeedback,
@@ -8,24 +8,19 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import colors from "../config/colors";
 
-function AddPostButton({ onPress }) {
+function AddPostButton({ onPress, icon }) {
   return (
-    // <TouchableNativeFeedback
-    //   background={TouchableNativeFeedback.Ripple(colors.pressing_bg)}
-    //   onPress={onPress}
-    // >
     <View>
       <View style={styles.container}>
         <TouchableWithoutFeedback onPress={onPress}>
           <MaterialCommunityIcons
-            name="plus"
+            name={icon}
             size={46}
             color={colors.pressing_fg}
           />
         </TouchableWithoutFeedback>
       </View>
     </View>
-    // </TouchableNativeFeedback>
   );
 }
 

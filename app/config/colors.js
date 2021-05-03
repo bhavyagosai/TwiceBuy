@@ -1,5 +1,5 @@
 export default {
-  main_bg: "#E5E5E5",
+  main_bg: "#FDFDFD",
   pressing_bg: "#EEE5FE",
   main_fg: "#8764C2",
   pressing_fg: "#FFFFFF",

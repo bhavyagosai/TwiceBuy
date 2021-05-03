@@ -16,7 +16,7 @@ function ItemPickerBox({ item, onPressEvent }) {
       <View style={styles.Container}>
         <Shadow distance={10} startColor={"#00000007"} radius={37.5}>
           <TouchableNativeFeedback
-            onPress={onPressEvent}
+            onPress={() => onPressEvent()}
             background={TouchableNativeFeedback.Ripple(colors.pressing_bg)}
           >
             <View style={styles.ButtonContainer}>{item.icon}</View>
