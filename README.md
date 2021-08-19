@@ -1,6 +1,6 @@
 <h1 align="center">🛒🛍 TwiceBuy</h1>
 <p align="center"><img src="https://i.imgur.com/fXEDfN6.png" height="200"/></p>
-<p align="center">Control your home with SmartControl</p><br>
+<p align="center"><b>A Thrift Shopping Application</b></p><br>
 TwiceBuy is a mobile based thrift-shopping application fabricated for buying and selling items online in the  user’s nearby locations.
 <br><br>
 <p align="center"><img src="https://i.imgur.com/VsYUQvM.jpg" /></p>
